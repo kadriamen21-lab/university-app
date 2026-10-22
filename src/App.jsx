@@ -1,49 +1,69 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
 import './App.css'
+import Header from './components/Header.jsx'
+import Navbar from './components/Navbar.jsx'
+import StudentCard from './components/StudentCard.jsx'
+import Footer from './components/Footer.jsx'
+import studentImage from './assets/images.jpg'
 
-const Nom = "Kadri Amen Allah"
-const Email = "kadriamen21@gmail.com"
-const Telephone = "55103781"
-const Filiere = "Génie Logiciel et Système d'Information"
-const AnneeEtude = "2026-2027"
-const Groupe = "GLSI2 C"
-const Ville = "Mahdia"
+const etudiants = [
+  {
+    prenom: "Amen Allah",
+    nom: "Kadri",
+    email: "kadriamen21@gmail.com",
+    telephone: "55103781",
+    filiere: "Génie Logiciel et Système d'Information",
+    anneeEtude: "2ème année",
+    groupe: "GLSI 2 C",
+    ville: "Mahdia",
+    image: studentImage
+  },
+  {
+    prenom: "Sarra",
+    nom: "Trabelsi",
+    email: "sarra.trabelsi@gmail.com",
+    telephone: "+216 22 345 678",
+    filiere: "Génie Logiciel et Système d'Information",
+    anneeEtude: "2ème année",
+    groupe: "GLSI 1",
+    ville: "Sousse"
+    // pas d'image
+  },
+  {
+    prenom: "Mariem",
+    nom: "Khalfallah",
+    email: "mariem.khalfallah@gmail.com",
+    telephone: "+216 27 567 890",
+    filiere: "Génie Logiciel et Système d'Information",
+    anneeEtude: "2ème année",
+    groupe: "GLSI 2"
+    // pas de ville : "Non renseignée" s'affichera
+  }
+]
 
 function App() {
   return (
     <div>
-      <img src="/images.jpg" alt="Photo de profil" width="100" height="100" />
-      <div>
-        <label>Nom & Prénom : </label>
-        <span>{Nom}</span>
+      <Header />
+      <Navbar />
+
+      <div className="container">
+        {etudiants.map((etudiant) => (
+          <StudentCard
+            key={etudiant.email}
+            prenom={etudiant.prenom}
+            nom={etudiant.nom}
+            email={etudiant.email}
+            telephone={etudiant.telephone}
+            filiere={etudiant.filiere}
+            anneeEtude={etudiant.anneeEtude}
+            groupe={etudiant.groupe}
+            ville={etudiant.ville}
+            image={etudiant.image}
+          />
+        ))}
       </div>
-      <div>
-        <label>Email : </label>
-        <span>{Email}</span>
-      </div>
-      <div>
-        <label>Téléphone : </label>
-        <span>{Telephone}</span>
-      </div>
-      <div>
-        <label>Filière : </label>
-        <span>{Filiere}</span>
-      </div>
-      <div>
-        <label>Année d'étude : </label>
-        <span>{AnneeEtude}</span>
-      </div>
-      <div>
-        <label>Groupe : </label>
-        <span>{Groupe}</span>
-      </div>
-      <div>
-        <label>Ville : </label>
-        <span>{Ville}</span>
-      </div>
+
+      <Footer />
     </div>
   )
 }
