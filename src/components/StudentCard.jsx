@@ -1,24 +1,61 @@
+import { useState } from 'react'
 import './StudentCard.css'
-
-function StudentCard(props) {
-  // Props par défaut : valeur utilisée si l'info n'est pas fournie
-  const ville = props.ville || "Non renseignée"
+function StudentCard({
+  prenom,
+  nom,
+  email,
+  telephone,
+  filiere,
+  anneeEtude,
+  groupe,
+  ville = "Non renseignée",
+  image,
+  onSupprimer,
+  onModifier
+}) {
+  const [coordonneesVisibles, setCoordonneesVisibles] = useState(false)
+  function basculerCoordonnees() {
+    setCoordonneesVisibles(!coordonneesVisibles)
+  }
+  function modifierInformation() {
+    const nouveau = prompt("Nouveau prénom :", prenom)
+    if (nouveau && nouveau.trim() !== "") {
+      onModifier(nouveau.trim())
+    }
+  }
 
   return (
-    <div className="card">
-      {props.image && <img src={props.image} alt="Photo de l'étudiant" />}
+    <div className="container">
+      <div className="card">
+        {image && <img src={image} alt={prenom} />}
+        <h2>Fiche étudiant</h2>
+        <p>Nom & Prénom : {prenom} {nom}</p>
 
-      <h1>Fiche étudiant</h1>
+        
+        {coordonneesVisibles && (
+          <>
+            <p>Email : {email}</p>
+            <p>Téléphone : {telephone}</p>
+          </>
+        )}
 
-      <p><strong>Nom & Prénom :</strong> {props.prenom} {props.nom}</p>
-      <p><strong>Email :</strong> {props.email}</p>
-      <p><strong>Téléphone :</strong> {props.telephone}</p>
-      <p><strong>Filière :</strong> {props.filiere}</p>
-      <p><strong>Année :</strong> {props.anneeEtude}</p>
-      <p><strong>Groupe :</strong> {props.groupe}</p>
-      <p><strong>Ville :</strong> {ville}</p>
+        <p>Filière : {filiere}</p>
+        <p>Année : {anneeEtude}</p>
+        <p>Groupe : {groupe}</p>
+        <p>Ville : {ville}</p>
 
-      <button>Contacter</button>
+        
+        <button onClick={basculerCoordonnees}>
+          {coordonneesVisibles
+            ? "Masquer les coordonnées"
+            : "Afficher les coordonnées"}
+        </button>
+        <button onClick={() => alert(`Contacter ${prenom} : ${email}`)}>
+          Contacter
+        </button>
+        <button onClick={modifierInformation}>Modifier</button>
+        <button onClick={onSupprimer}>Supprimer</button>
+      </div>
     </div>
   )
 }

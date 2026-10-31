@@ -38,3 +38,37 @@ body {
   gap: 20px;
   padding: 30px;
 }
+.njk{
+  background: #5b5bd6;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  }
+
+
+.njk:hover {
+  background: #4646b8;
+}
+
+.njk:active {
+  transform: scale(0.97);
+}
+.actions input {
+  width: 260px;
+  padding: 10px 14px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  background: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.actions input:focus {
+  border-color: #5b5bd6;
+  box-shadow: 0 0 0 3px rgba(91, 91, 214, 0.2);
+}
