@@ -6,7 +6,7 @@ import StudentCard from './components/StudentCard.jsx'
 import Footer from './components/Footer.jsx'
 import studentImage from './assets/images.jpg'
 import studentImage2 from './assets/images 2.jpg'
-import studentImage3 from './assets/images 1.jpg'
+import StudentForm from './components/studentForm.jsx'
 
 function App() {
   const [etudiants, setEtudiants] = useState([
@@ -40,27 +40,24 @@ function App() {
       filiere: "Génie Logiciel et Système d'Information",
       anneeEtude: "2ème année",
       groupe: "GLSI 2",
-      image: studentImage3
+      image: studentImage2
     }
   ])
   const [recherche, setRecherche] = useState("")
-  function ajouterEtudiant() {
-    const nouvelEtudiant = {
-      prenom: "Yassine",
-      nom: "Ben Salem",
-      email: "yassine.bensalem@gmail.com",
-      telephone: "+216 44 444 444",
-      filiere: "Licence Computer Science",
-      anneeEtude: "1ère année",
-      groupe: "LCS 1",
-      ville: "Sfax"
-    }
+  function ajouterEtudiant(nouvelEtudiant) {
+    const etudiantAvecId = {
+      ...nouvelEtudiant,
+      id: Date.now(),
+    };
+  
+
     if (etudiants.some((e) => e.email === nouvelEtudiant.email)) {
       alert("Cet étudiant existe déjà.")
       return
     }
-    setEtudiants([...etudiants, nouvelEtudiant])
+    setEtudiants([...etudiants, etudiantAvecId])
   }
+  //filter parcourir et crée un nouveau qui repond à un condition
   function supprimerEtudiant(email) {
     setEtudiants(etudiants.filter((e) => e.email !== email))
   }
@@ -79,8 +76,8 @@ function App() {
     <div>
       <Header />
       <Navbar />
+      <StudentForm onAjouterEtudiant={ajouterEtudiant} />
       <div className="actions">
-        <button className="njk" onClick={ajouterEtudiant}>Ajouter un étudiant</button>
         <input
           type="text"
           placeholder="Filtrer par filière..."
