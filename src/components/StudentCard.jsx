@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import './StudentCard.css'
+
 function StudentCard({
   prenom,
   nom,
@@ -11,17 +12,12 @@ function StudentCard({
   ville = "Non renseignée",
   image,
   onSupprimer,
-  onModifier
+  onModifier,
 }) {
   const [coordonneesVisibles, setCoordonneesVisibles] = useState(false)
+
   function basculerCoordonnees() {
     setCoordonneesVisibles(!coordonneesVisibles)
-  }
-  function modifierInformation() {
-    const nouveau = prompt("Nouveau prénom :", prenom)
-    if (nouveau && nouveau.trim() !== "") {
-      onModifier(nouveau.trim())
-    }
   }
 
   return (
@@ -31,7 +27,6 @@ function StudentCard({
         <h2>Fiche étudiant</h2>
         <p>Nom & Prénom : {prenom} {nom}</p>
 
-        
         {coordonneesVisibles && (
           <>
             <p>Email : {email}</p>
@@ -44,7 +39,6 @@ function StudentCard({
         <p>Groupe : {groupe}</p>
         <p>Ville : {ville}</p>
 
-        
         <button onClick={basculerCoordonnees}>
           {coordonneesVisibles
             ? "Masquer les coordonnées"
@@ -53,7 +47,7 @@ function StudentCard({
         <button onClick={() => alert(`Contacter ${prenom} : ${email}`)}>
           Contacter
         </button>
-        <button onClick={modifierInformation}>Modifier</button>
+        <button onClick={onModifier}>Modifier</button>
         <button onClick={onSupprimer}>Supprimer</button>
       </div>
     </div>

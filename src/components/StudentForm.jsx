@@ -1,16 +1,17 @@
 import { useState } from "react";
 import "./StudentForm.css";
 
-function StudentForm({ onAjouterEtudiant }) {
-  const [nom, setNom] = useState("");
-  const [prenom, setPrenom] = useState("");
-  const [email, setEmail] = useState("");
-  const [telephone, setTelephone] = useState("");
-  const [filiere, setFiliere] = useState("");
-  const [anneeEtude, setAnneeEtude] = useState("");
-  const [groupe, setGroupe] = useState("");
-  const [ville, setVille] = useState("");
-  const [image, setImage] = useState("");
+function StudentForm({ onAjouterEtudiant, onModifierEtudiant, etudiantAModifier }) {
+  const [nom, setNom] = useState(etudiantAModifier ? etudiantAModifier.nom : "");
+  const [prenom, setPrenom] = useState(etudiantAModifier ? etudiantAModifier.prenom : "");
+  const [email, setEmail] = useState(etudiantAModifier ? etudiantAModifier.email : "");
+  const [telephone, setTelephone] = useState(etudiantAModifier ? etudiantAModifier.telephone : "");
+  const [filiere, setFiliere] = useState(etudiantAModifier ? etudiantAModifier.filiere : "");
+  const [anneeEtude, setAnneeEtude] = useState(etudiantAModifier ? etudiantAModifier.anneeEtude : "");
+  const [groupe, setGroupe] = useState(etudiantAModifier ? etudiantAModifier.groupe : "");
+  const [ville, setVille] = useState(etudiantAModifier ? etudiantAModifier.ville : "");
+  const [image, setImage] = useState(etudiantAModifier ? etudiantAModifier.image : "");
+  const [erreurs, setErreurs] = useState({});
 
   function viderChamps() {
     setNom("");
@@ -22,29 +23,62 @@ function StudentForm({ onAjouterEtudiant }) {
     setGroupe("");
     setVille("");
     setImage("");
+    setErreurs({});
+  }
+
+  function validerFormulaire() {
+    const nouvellesErreurs = {};
+
+    if (nom.trim() === "") nouvellesErreurs.nom = "Le nom est obligatoire.";
+    if (prenom.trim() === "") nouvellesErreurs.prenom = "Le prénom est obligatoire.";
+
+    if (email.trim() === "") {
+      nouvellesErreurs.email = "L'email est obligatoire.";
+    } else if (!/^\S+@\S+\.\S+$/.test(email.trim())) {
+      nouvellesErreurs.email = "L'email n'est pas valide.";
+    }
+
+    if (telephone.trim() === "") {
+      nouvellesErreurs.telephone = "Le téléphone est obligatoire.";
+    } else if (!/^[+\d\s]{8,}$/.test(telephone.trim())) {
+      nouvellesErreurs.telephone = "Le téléphone n'est pas valide (8 chiffres minimum).";
+    }
+
+    if (filiere === "") nouvellesErreurs.filiere = "Choisir une filière.";
+    if (anneeEtude.trim() === "") nouvellesErreurs.anneeEtude = "L'année d'étude est obligatoire.";
+    if (groupe.trim() === "") nouvellesErreurs.groupe = "Le groupe est obligatoire.";
+    if (ville.trim() === "") nouvellesErreurs.ville = "La ville est obligatoire.";
+
+    setErreurs(nouvellesErreurs);
+    return Object.keys(nouvellesErreurs).length === 0;
   }
 
   function handleSubmit(e) {
-    e.preventDefault(); 
+    e.preventDefault();
+
+    if (!validerFormulaire()) {
+      return;
+    }
 
     const nouvelEtudiant = {
-      nom: nom,
-      prenom: prenom,
-      email: email,
-      telephone: telephone,
+      nom: nom.trim(),
+      prenom: prenom.trim(),
+      email: email.trim(),
+      telephone: telephone.trim(),
       filiere: filiere,
-      anneeEtude: anneeEtude,
-      groupe: groupe,
-      ville: ville,
+      anneeEtude: anneeEtude.trim(),
+      groupe: groupe.trim(),
+      ville: ville.trim(),
       image: image,
     };
 
-    console.log("Nouvel étudiant ajouté :", nouvelEtudiant);
-
-    onAjouterEtudiant(nouvelEtudiant);
-
-    e.target.reset(); 
-    viderChamps();
+    if (etudiantAModifier) {
+      onModifierEtudiant({ ...etudiantAModifier, ...nouvelEtudiant });
+    } else {
+      onAjouterEtudiant(nouvelEtudiant);
+      e.target.reset();
+      viderChamps();
+    }
   }
 
   function handleReset() {
@@ -52,8 +86,13 @@ function StudentForm({ onAjouterEtudiant }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} onReset={handleReset} className="student-form">
-      <h2>Ajouter un étudiant</h2>
+    <form
+      onSubmit={handleSubmit}
+      onReset={handleReset}
+      className="student-form"
+      // noValidate
+    >
+      <h2>{etudiantAModifier ? "Modifier un étudiant" : "Ajouter un étudiant"}</h2>
 
       <div className="form-group">
         <label htmlFor="nom">Nom :</label>
@@ -62,10 +101,10 @@ function StudentForm({ onAjouterEtudiant }) {
           id="nom"
           name="nom"
           placeholder="Saisir votre nom"
-          required
           value={nom}
           onChange={(e) => setNom(e.target.value)}
         />
+        {erreurs.nom && <span className="erreur">{erreurs.nom}</span>}
       </div>
 
       <div className="form-group">
@@ -75,10 +114,10 @@ function StudentForm({ onAjouterEtudiant }) {
           id="prenom"
           name="prenom"
           placeholder="Saisir votre prénom"
-          required
           value={prenom}
           onChange={(e) => setPrenom(e.target.value)}
         />
+        {erreurs.prenom && <span className="erreur">{erreurs.prenom}</span>}
       </div>
 
       <div className="form-group">
@@ -88,10 +127,10 @@ function StudentForm({ onAjouterEtudiant }) {
           id="email"
           name="email"
           placeholder="Saisir votre email"
-          required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+        {erreurs.email && <span className="erreur">{erreurs.email}</span>}
       </div>
 
       <div className="form-group">
@@ -101,10 +140,10 @@ function StudentForm({ onAjouterEtudiant }) {
           id="telephone"
           name="telephone"
           placeholder="Saisir votre numéro de téléphone"
-          required
           value={telephone}
           onChange={(e) => setTelephone(e.target.value)}
         />
+        {erreurs.telephone && <span className="erreur">{erreurs.telephone}</span>}
       </div>
 
       <div className="form-group">
@@ -112,7 +151,6 @@ function StudentForm({ onAjouterEtudiant }) {
         <select
           id="filiere"
           name="filiere"
-          required
           value={filiere}
           onChange={(e) => setFiliere(e.target.value)}
         >
@@ -121,6 +159,7 @@ function StudentForm({ onAjouterEtudiant }) {
           <option value="DSI">DSI</option>
           <option value="RSI">RSI</option>
         </select>
+        {erreurs.filiere && <span className="erreur">{erreurs.filiere}</span>}
       </div>
 
       <div className="form-group">
@@ -129,11 +168,11 @@ function StudentForm({ onAjouterEtudiant }) {
           type="text"
           id="anneeEtude"
           name="anneeEtude"
-          placeholder="Ex : 1ère année"
-          required
+          placeholder="Ex : 2ème année"
           value={anneeEtude}
           onChange={(e) => setAnneeEtude(e.target.value)}
         />
+        {erreurs.anneeEtude && <span className="erreur">{erreurs.anneeEtude}</span>}
       </div>
 
       <div className="form-group">
@@ -142,11 +181,11 @@ function StudentForm({ onAjouterEtudiant }) {
           type="text"
           id="groupe"
           name="groupe"
-          placeholder="Ex : G1"
-          required
+          placeholder="Ex : GLSI 2"
           value={groupe}
           onChange={(e) => setGroupe(e.target.value)}
         />
+        {erreurs.groupe && <span className="erreur">{erreurs.groupe}</span>}
       </div>
 
       <div className="form-group">
@@ -156,10 +195,10 @@ function StudentForm({ onAjouterEtudiant }) {
           id="ville"
           name="ville"
           placeholder="Saisir votre ville"
-          required
           value={ville}
           onChange={(e) => setVille(e.target.value)}
         />
+        {erreurs.ville && <span className="erreur">{erreurs.ville}</span>}
       </div>
 
       <div className="form-group">
@@ -180,7 +219,7 @@ function StudentForm({ onAjouterEtudiant }) {
 
       <div className="form-buttons">
         <button type="submit" className="btn-submit">
-          Ajouter
+          {etudiantAModifier ? "Enregistrer" : "Ajouter"}
         </button>
         <button type="reset" className="btn-reset">
           Réinitialiser
